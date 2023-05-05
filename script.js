@@ -9,7 +9,17 @@ dbRef.on("value", (snapshot) => {
   if (data) {
     gameKey = Object.keys(data)[0];
     const gameState = data[gameKey];
-    updateBoard(gameState);
+    // Ersetzen Sie den Aufruf von `updateBoard(gameState)` durch den folgenden Code:
+    for (let i = 0; i < 9; i++) {
+      if (gameState.board[i]) {
+        cells[i].setAttribute("data-player", gameState.board[i]);
+        cells[i].textContent = gameState.board[i];
+      } else {
+        cells[i].removeAttribute("data-player");
+        cells[i].textContent = "";
+      }
+    }
+    currentPlayer = gameState.currentPlayer;
   } else {
     startNewGame();
   }
@@ -57,16 +67,6 @@ function resetBoard() {
   });
   addClickListeners();
   startNewGame();
-}
-
-function updateBoard(gameState) {
-  gameState.forEach((cellState, index) => {
-    if (cellState) {
-      const cell = cells[index];
-      cell.setAttribute("data-player", cellState);
-      cell.textContent = cellState;
-    }
-  });
 }
 
 function updateCell(cellIndex, player) {
