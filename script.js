@@ -9,17 +9,21 @@ dbRef.on("value", (snapshot) => {
   if (data) {
     gameKey = Object.keys(data)[0];
     const gameState = data[gameKey];
-    const board = gameState.board;
-    for (let i = 0; i < 9; i++) {
-      if (board[i]) {
-        cells[i].setAttribute("data-player", board[i]);
-        cells[i].textContent = board[i];
-      } else {
-        cells[i].removeAttribute("data-player");
-        cells[i].textContent = "";
+    if (gameState) {
+      const board = gameState.board;
+      for (let i = 0; i < 9; i++) {
+        if (board[i]) {
+          cells[i].setAttribute("data-player", board[i]);
+          cells[i].textContent = board[i];
+        } else {
+          cells[i].removeAttribute("data-player");
+          cells[i].textContent = "";
+        }
       }
+      currentPlayer = gameState.currentPlayer;
+    } else {
+      startNewGame();
     }
-    currentPlayer = gameState.currentPlayer;
   } else {
     startNewGame();
   }
