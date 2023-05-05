@@ -33,18 +33,14 @@ function startNewGame() {
   gameKey = generateGameKey();
   dbRef.child(gameKey).set(Array(9).fill(null));
   dbRef.child(gameKey).child("currentPlayer").set("X");
-  dbRef.child(gameKey).on("value", (snapshot) => {
-    const boardState = snapshot.val();
-    for (let i = 0; i < 9; i++) {
-      if (boardState[i]) {
-        cells[i].setAttribute("data-player", boardState[i]);
-        cells[i].textContent = boardState[i];
-      } else {
-        cells[i].removeAttribute("data-player");
-        cells[i].textContent = "";
-      }
+  dbRef.child(gameKey).on("child_changed", (snapshot) => {
+    if (snapshot.key === "currentPlayer") {
+      currentPlayer = snapshot.val();
+    } else {
+      const cellIndex = parseInt(snapshot.key, 10);
+      const player = snapshot.val();
+      updateCell(cellIndex, player);
     }
-    currentPlayer = boardState.currentPlayer;
   });
 
   addClickListeners();
@@ -70,12 +66,20 @@ function updateBoard(gameState) {
   });
 }
 
+function updateCell(cellIndex, player) {
+  const cell = cells[cellIndex];
+  cell.setAttribute("data-player", player);
+  cell.textContent = player;
+}
+
 function handleClick(e) {
   const cell = e.target;
   const cellIndex = [...cells].indexOf(cell);
   if (cell.getAttribute("data-player")) {
     return;
   }
+
+  updateCell(cellIndex, currentPlayer);
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
