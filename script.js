@@ -77,9 +77,6 @@ function handleClick(e) {
     return;
   }
 
-  cell.setAttribute("data-player", currentPlayer);
-  cell.textContent = currentPlayer;
-
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
     resetBoard();
