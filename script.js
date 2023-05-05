@@ -41,7 +41,6 @@ function resetBoard() {
   cells.forEach((cell) => {
     cell.removeAttribute("data-player");
     cell.textContent = "";
-    cell.removeEventListener("click", handleClick);
   });
   addClickListeners();
   startNewGame();
