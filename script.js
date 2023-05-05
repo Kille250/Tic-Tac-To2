@@ -23,14 +23,6 @@ function updateGameState(gameState) {
       cell.textContent = cellState;
     }
   });
-
-  dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
-    const winner = snapshot.val();
-    if (winner) {
-      alert(`${winner} wins!`);
-      resetGame();
-    }
-  });
 }
 
 function addClickListeners() {
@@ -48,23 +40,28 @@ function resetFirebaseData() {
 }
 
 function resetGame() {
+  // Entferne den Listener, bevor das Spiel zurückgesetzt wird
+  dbRef.child(gameKey).child("winner").off("value");
+
   resetFirebaseData();
   clearBoard();
   addClickListeners();
   dbRef.child(gameKey).child("winner").set(null);
 }
 
-function clearBoard() {
-  cells.forEach((cell) => {
-    cell.removeAttribute("data-player");
-    cell.textContent = "";
-  });
-}
-
 function startNewGame() {
   gameKey = generateGameKey();
   dbRef.child(gameKey).set({ board: Array(9).fill(null), currentPlayer: "X" });
   addClickListeners();
+
+  // Füge den Listener für das "winner"-Attribut hier hinzu
+  dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
+    const winner = snapshot.val();
+    if (winner) {
+      alert(`${winner} wins!`);
+      resetGame();
+    }
+  });
 }
 
 function resetBoard() {
