@@ -21,6 +21,14 @@ function startNewGame() {
   dbRef.child(gameKey).set(initialGameState);
 }
 
+function resetBoard() {
+  cells.forEach((cell) => {
+    cell.removeAttribute("data-player");
+    cell.textContent = "";
+  });
+  startNewGame();
+}
+
 function updateBoard(gameState) {
   gameState.forEach((cellState, index) => {
     if (cellState) {
@@ -43,10 +51,10 @@ function handleClick(e) {
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
-    location.reload(); // Reload the page to start a new game
+    resetBoard();
   } else if (isBoardFull()) {
     alert("It's a draw!");
-    startNewGame();
+    resetBoard();
   } else {
     dbRef.child(gameKey).child(cellIndex).set(currentPlayer);
     currentPlayer = currentPlayer === "X" ? "O" : "X";
