@@ -44,6 +44,12 @@ function resetFirebaseData() {
   dbRef.child(gameKey).update(updates);
 }
 
+function resetGame() {
+  resetFirebaseData();
+  clearBoard();
+  addClickListeners();
+}
+
 function clearBoard() {
   cells.forEach((cell) => {
     cell.removeAttribute("data-player");
@@ -75,12 +81,10 @@ function handleClick(e) {
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
-    resetFirebaseData();
-    clearBoard();
+    resetGame();
   } else if (isBoardFull()) {
     alert("It's a draw!");
-    resetFirebaseData();
-    clearBoard();
+    resetGame();
   } else {
     dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
     currentPlayer = currentPlayer === "X" ? "O" : "X";
