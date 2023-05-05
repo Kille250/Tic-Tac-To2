@@ -9,26 +9,17 @@ dbRef.on("value", (snapshot) => {
   if (data) {
     gameKey = Object.keys(data)[0];
     const gameState = data[gameKey];
-    if (gameState) {
-      const board = gameState.board;
-      for (let i = 0; i < 9; i++) {
-        if (board[i]) {
-          cells[i].setAttribute("data-player", board[i]);
-          cells[i].textContent = board[i];
-        } else {
-          cells[i].removeAttribute("data-player");
-          cells[i].textContent = "";
-        }
-      }
-      currentPlayer = gameState.currentPlayer;
-      addClickListeners();
-    } else {
-      startNewGame();
-    }
+    updateBoard(gameState);
   } else {
     startNewGame();
   }
 });
+
+function updateCell(cellIndex, player) {
+  const cell = cells[cellIndex];
+  cell.setAttribute("data-player", player);
+  cell.textContent = player;
+}
 
 function addClickListeners() {
   cells.forEach((cell) => {
