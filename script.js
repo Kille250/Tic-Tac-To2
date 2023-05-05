@@ -23,11 +23,21 @@ function updateGameState(gameState) {
       cell.textContent = cellState;
     }
   });
+
+  currentPlayer = gameState.currentPlayer;
+
+  dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
+    const winner = snapshot.val();
+    if (winner) {
+      alert(`${winner} wins!`);
+      resetGame();
+    }
+  });
 }
 
 function addClickListeners() {
   cells.forEach((cell) => {
-    cell.addEventListener("click", handleClick); // Entferne { once: true }
+    cell.addEventListener("click", handleClick);
   });
 }
 
@@ -40,35 +50,25 @@ function resetFirebaseData() {
 }
 
 function resetGame() {
-  // Entferne den Listener, bevor das Spiel zurückgesetzt wird
-  dbRef.child(gameKey).child("winner").off("value");
-
   resetFirebaseData();
   clearBoard();
   addClickListeners();
+  currentPlayer = "X";
   dbRef.child(gameKey).child("winner").set(null);
+  dbRef.child(gameKey).child("currentPlayer").set(currentPlayer);
+}
+
+function clearBoard() {
+  cells.forEach((cell) => {
+    cell.removeAttribute("data-player");
+    cell.textContent = "";
+  });
 }
 
 function startNewGame() {
   gameKey = generateGameKey();
   dbRef.child(gameKey).set({ board: Array(9).fill(null), currentPlayer: "X" });
   addClickListeners();
-
-  // Füge den Listener für das "winner"-Attribut hier hinzu
-  dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
-    const winner = snapshot.val();
-    if (winner) {
-      alert(`${winner} wins!`);
-      resetGame();
-    }
-  });
-}
-
-function resetBoard() {
-  cells.forEach((cell) => {
-    cell.removeEventListener("click", handleClick);
-  });
-  startNewGame();
 }
 
 function handleClick(e) {
@@ -81,10 +81,8 @@ function handleClick(e) {
   dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
 
   if (checkWinner(currentPlayer)) {
-    resetFirebaseData();
     dbRef.child(gameKey).child("winner").set(currentPlayer);
   } else if (isBoardFull()) {
-    resetFirebaseData();
     alert("It's a draw!");
     resetGame();
   } else {
