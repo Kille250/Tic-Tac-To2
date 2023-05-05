@@ -21,6 +21,7 @@ dbRef.on("value", (snapshot) => {
         }
       }
       currentPlayer = gameState.currentPlayer;
+      addClickListeners();
     } else {
       startNewGame();
     }
