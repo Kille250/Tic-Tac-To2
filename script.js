@@ -43,7 +43,16 @@ function resetGame() {
   resetFirebaseData();
   clearBoard();
   addClickListeners();
+  dbRef.child(gameKey).child("winner").set(null);
 }
+
+dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
+  const winner = snapshot.val();
+  if (winner) {
+    alert(`${winner} wins!`);
+    resetGame();
+  }
+});
 
 function clearBoard() {
   cells.forEach((cell) => {
@@ -73,8 +82,7 @@ function handleClick(e) {
   }
 
   if (checkWinner(currentPlayer)) {
-    alert(`${currentPlayer} wins!`);
-    resetGame();
+    dbRef.child(gameKey).child("winner").set(currentPlayer);
   } else if (isBoardFull()) {
     alert("It's a draw!");
     resetGame();
