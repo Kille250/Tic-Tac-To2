@@ -15,6 +15,12 @@ dbRef.on("value", (snapshot) => {
   }
 });
 
+function addClickListeners() {
+  cells.forEach((cell) => {
+    cell.addEventListener("click", handleClick, { once: true });
+  });
+}
+
 function resetFirebaseData() {
   const updates = {};
   for (let i = 0; i < 9; i++) {
@@ -27,6 +33,7 @@ function startNewGame() {
   const initialGameState = Array(9).fill("");
   gameKey = dbRef.push().key;
   dbRef.child(gameKey).set(initialGameState);
+  addClickListeners();
 }
 
 function resetBoard() {
@@ -34,7 +41,9 @@ function resetBoard() {
   cells.forEach((cell) => {
     cell.removeAttribute("data-player");
     cell.textContent = "";
+    cell.removeEventListener("click", handleClick);
   });
+  addClickListeners();
   startNewGame();
 }
 
