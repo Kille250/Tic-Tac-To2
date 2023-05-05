@@ -25,12 +25,6 @@ function updateGameState(gameState) {
   });
 }
 
-function updateCell(cellIndex, player) {
-  const cell = cells[cellIndex];
-  cell.setAttribute("data-player", player);
-  cell.textContent = player;
-}
-
 function addClickListeners() {
   cells.forEach((cell) => {
     cell.addEventListener("click", handleClick, { once: true });
@@ -77,8 +71,6 @@ function handleClick(e) {
   if (cell.getAttribute("data-player")) {
     return;
   }
-
-  updateCell(cellIndex, currentPlayer);
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
