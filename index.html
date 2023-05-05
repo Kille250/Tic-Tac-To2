@@ -9,6 +9,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
     <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof firebase === "undefined") {
+      console.error("Firebase not loaded. Check the CDN links in your HTML file.");
+    } else {
+      console.log("Firebase loaded successfully.");
+    }
+  });
+</script>
+    <script>
   // Replace these values with your actual values from the Firebase console
         const firebaseConfig = {
             apiKey: "THTcT2KPu6kAuCArCtO7k662qj3CXVoBZUkwDWjF",
