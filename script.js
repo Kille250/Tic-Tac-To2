@@ -9,11 +9,21 @@ dbRef.on("value", (snapshot) => {
   if (data) {
     gameKey = Object.keys(data)[0];
     const gameState = data[gameKey];
-    updateBoard(gameState);
+    updateGameState(gameState);
   } else {
     startNewGame();
   }
 });
+
+function updateGameState(gameState) {
+  gameState.board.forEach((cellState, index) => {
+    if (cellState) {
+      const cell = cells[index];
+      cell.setAttribute("data-player", cellState);
+      cell.textContent = cellState;
+    }
+  });
+}
 
 function updateCell(cellIndex, player) {
   const cell = cells[cellIndex];
