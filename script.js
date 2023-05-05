@@ -23,6 +23,14 @@ function updateGameState(gameState) {
       cell.textContent = cellState;
     }
   });
+
+  dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
+    const winner = snapshot.val();
+    if (winner) {
+      alert(`${winner} wins!`);
+      resetGame();
+    }
+  });
 }
 
 function addClickListeners() {
@@ -45,14 +53,6 @@ function resetGame() {
   addClickListeners();
   dbRef.child(gameKey).child("winner").set(null);
 }
-
-dbRef.child(gameKey).child("winner").on("value", (snapshot) => {
-  const winner = snapshot.val();
-  if (winner) {
-    alert(`${winner} wins!`);
-    resetGame();
-  }
-});
 
 function clearBoard() {
   cells.forEach((cell) => {
