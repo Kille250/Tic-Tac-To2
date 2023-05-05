@@ -33,14 +33,18 @@ function startNewGame() {
   gameKey = generateGameKey();
   dbRef.child(gameKey).set(Array(9).fill(null));
   dbRef.child(gameKey).child("currentPlayer").set("X");
-  dbRef.child(gameKey).on("child_changed", (snapshot) => {
-    if (snapshot.key === "currentPlayer") {
-      currentPlayer = snapshot.val();
-    } else {
-      const cellIndex = parseInt(snapshot.key, 10);
-      const player = snapshot.val();
-      updateCell(cellIndex, player);
+  dbRef.child(gameKey).on("value", (snapshot) => {
+    const gameState = snapshot.val();
+    for (let i = 0; i < 9; i++) {
+      if (gameState[i]) {
+        cells[i].setAttribute("data-player", gameState[i]);
+        cells[i].textContent = gameState[i];
+      } else {
+        cells[i].removeAttribute("data-player");
+        cells[i].textContent = "";
+      }
     }
+    currentPlayer = gameState.currentPlayer;
   });
 
   addClickListeners();
