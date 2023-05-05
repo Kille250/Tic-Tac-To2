@@ -15,6 +15,14 @@ dbRef.on("value", (snapshot) => {
   }
 });
 
+function resetFirebaseData() {
+  const updates = {};
+  for (let i = 0; i < 9; i++) {
+    updates[i] = null;
+  }
+  dbRef.child(gameKey).update(updates);
+}
+
 function startNewGame() {
   const initialGameState = Array(9).fill("");
   gameKey = dbRef.push().key;
@@ -22,6 +30,7 @@ function startNewGame() {
 }
 
 function resetBoard() {
+  resetFirebaseData();
   cells.forEach((cell) => {
     cell.removeAttribute("data-player");
     cell.textContent = "";
