@@ -31,14 +31,13 @@ function resetFirebaseData() {
 
 function startNewGame() {
   gameKey = generateGameKey();
-  dbRef.child(gameKey).set(Array(9).fill(null));
-  dbRef.child(gameKey).child("currentPlayer").set("X");
+  dbRef.child(gameKey).set({ board: Array(9).fill(null), currentPlayer: "X" });
   dbRef.child(gameKey).on("value", (snapshot) => {
     const gameState = snapshot.val();
     for (let i = 0; i < 9; i++) {
-      if (gameState[i]) {
-        cells[i].setAttribute("data-player", gameState[i]);
-        cells[i].textContent = gameState[i];
+      if (gameState.board[i]) {
+        cells[i].setAttribute("data-player", gameState.board[i]);
+        cells[i].textContent = gameState.board[i];
       } else {
         cells[i].removeAttribute("data-player");
         cells[i].textContent = "";
