@@ -43,7 +43,7 @@ function handleClick(e) {
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
-    startNewGame();
+    location.reload(); // Reload the page to start a new game
   } else if (isBoardFull()) {
     alert("It's a draw!");
     startNewGame();
