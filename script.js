@@ -27,7 +27,7 @@ function updateGameState(gameState) {
 
 function addClickListeners() {
   cells.forEach((cell) => {
-    cell.addEventListener("click", handleClick, { once: true });
+    cell.addEventListener("click", handleClick); // Entferne { once: true }
   });
 }
 
@@ -81,10 +81,10 @@ function handleClick(e) {
   dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
 
   if (checkWinner(currentPlayer)) {
-    resetFirebaseData(); // Füge dies hinzu, um das Spielbrett in der Datenbank zurückzusetzen
+    resetFirebaseData();
     dbRef.child(gameKey).child("winner").set(currentPlayer);
   } else if (isBoardFull()) {
-    resetFirebaseData(); // Füge dies hinzu, um das Spielbrett in der Datenbank zurückzusetzen
+    resetFirebaseData();
     alert("It's a draw!");
     resetGame();
   } else {
