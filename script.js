@@ -78,13 +78,16 @@ function handleClick(e) {
     return;
   }
 
+  dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
+
   if (checkWinner(currentPlayer)) {
+    resetFirebaseData(); // Füge dies hinzu, um das Spielbrett in der Datenbank zurückzusetzen
     dbRef.child(gameKey).child("winner").set(currentPlayer);
   } else if (isBoardFull()) {
+    resetFirebaseData(); // Füge dies hinzu, um das Spielbrett in der Datenbank zurückzusetzen
     alert("It's a draw!");
     resetGame();
   } else {
-    dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
     currentPlayer = currentPlayer === "X" ? "O" : "X";
     dbRef.child(gameKey).child("currentPlayer").set(currentPlayer);
   }
