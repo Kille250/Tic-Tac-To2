@@ -43,6 +43,13 @@ function resetFirebaseData() {
   dbRef.child(gameKey).update(updates);
 }
 
+function clearBoard() {
+  cells.forEach((cell) => {
+    cell.removeAttribute("data-player");
+    cell.textContent = "";
+  });
+}
+
 function startNewGame() {
   gameKey = generateGameKey();
   dbRef.child(gameKey).set({ board: Array(9).fill(null), currentPlayer: "X" });
@@ -63,17 +70,18 @@ function handleClick(e) {
     return;
   }
 
-  dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
-  cell.setAttribute("data-player", currentPlayer);
-  cell.textContent = currentPlayer;
+  updateCell(cellIndex, currentPlayer);
 
   if (checkWinner(currentPlayer)) {
     alert(`${currentPlayer} wins!`);
-    resetBoard();
+    resetFirebaseData();
+    clearBoard();
   } else if (isBoardFull()) {
     alert("It's a draw!");
-    resetBoard();
+    resetFirebaseData();
+    clearBoard();
   } else {
+    dbRef.child(gameKey).child("board").child(cellIndex).set(currentPlayer);
     currentPlayer = currentPlayer === "X" ? "O" : "X";
     dbRef.child(gameKey).child("currentPlayer").set(currentPlayer);
   }
