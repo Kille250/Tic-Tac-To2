@@ -30,9 +30,23 @@ function resetFirebaseData() {
 }
 
 function startNewGame() {
-  const initialGameState = Array(9).fill("");
-  gameKey = dbRef.push().key;
-  dbRef.child(gameKey).set(initialGameState);
+  gameKey = generateGameKey();
+  dbRef.child(gameKey).set(Array(9).fill(null));
+  dbRef.child(gameKey).child("currentPlayer").set("X");
+  dbRef.child(gameKey).on("value", (snapshot) => {
+    const boardState = snapshot.val();
+    for (let i = 0; i < 9; i++) {
+      if (boardState[i]) {
+        cells[i].setAttribute("data-player", boardState[i]);
+        cells[i].textContent = boardState[i];
+      } else {
+        cells[i].removeAttribute("data-player");
+        cells[i].textContent = "";
+      }
+    }
+    currentPlayer = boardState.currentPlayer;
+  });
+
   addClickListeners();
 }
 
@@ -75,6 +89,7 @@ function handleClick(e) {
   } else {
     dbRef.child(gameKey).child(cellIndex).set(currentPlayer);
     currentPlayer = currentPlayer === "X" ? "O" : "X";
+    dbRef.child(gameKey).child("currentPlayer").set(currentPlayer);
   }
 }
 
